@@ -21,16 +21,27 @@ AIRTABLE_BASE_ID=your_airtable_base_id
 
 Then, import and initialize the module:
 
-```javascript
-import airExport from "airtable-api-wrapper";
+Set your script type to module
 
-const airEx = airExport();
+```javascript
+import airInstance from "airtable-api";
+import dotenv from "dotenv";
+dotenv.config();
+
+const airExport = airInstance();
 ```
 
 Alternatively, you can provide your API key and Base ID directly:
 
 ```javascript
 const airtEx = airExport("your_api_key", "your_base_id");
+```
+
+#### Accessing Multiple Airtable Bases:
+
+```javascript
+const airtableInstance1 = airtable(apiKey1, baseID1);
+const airtableInstance2 = airtable(apiKey2, baseID2);
 ```
 
 ### Using Environment Variables on Other Platforms
@@ -223,13 +234,6 @@ const filteredRecords = await airEx.filterRecords(filter);
 ```
 
 This filters records where the linked record matches a specific ID.
-
-### Accessing Multiple Airtable Bases:
-
-```javascript
-const const airtableInstance1 = airtable(apiKey1, baseID1);
-const const airtableInstance2 = airtable(apiKey2, baseID2);
-```
 
 ## Error Handling
 
