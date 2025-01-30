@@ -35,6 +35,14 @@ Alternatively, you can provide your API key and Base ID directly:
 const airtable = airExport("your_api_key", "your_base_id");
 ```
 
+### Using Environment Variables on Other Platforms
+
+If you are deploying your application on platforms like Vercel, Netlify, or Heroku, ensure that you set the environment variables in their respective dashboards:
+
+- **Vercel**: Add `AIRTABLE_API_KEY` and `AIRTABLE_BASE_ID` in the project's Environment Variables section.
+- **Netlify**: Navigate to Site Settings > Build & Deploy > Environment and set the variables.
+- **Heroku**: Use `heroku config:set AIRTABLE_API_KEY=your_api_key AIRTABLE_BASE_ID=your_base_id`.
+
 ## Usage
 
 ### List All Records
