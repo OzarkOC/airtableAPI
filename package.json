@@ -3,9 +3,11 @@
   "version": "1.0.0",
   "description": "JS airtable functions",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/OzarkOC/airtableAPI.git"
@@ -14,5 +16,9 @@
     "airtable"
   ],
   "author": "Ozark OC Solutions",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "airtable": "^0.12.2",
+    "dotenv": "^16.4.7"
+  }
 }

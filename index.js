@@ -1,17 +1,19 @@
 import Airtable from "airtable";
 import dotenv from "dotenv";
-
 dotenv.config();
 
-const airExport = (apiKey, baseId) => {
+const airInstance = (
+  apiKey = process.env.AIRTABLE_API_KEY,
+  baseId = process.env.AIRTABLE_BASE_ID
+) => {
   const base = new Airtable({
-    apiKey: apiKey || process.env.AIRTABLE_API_KEY, // Default to process.env if not provided
-  }).base(baseId || process.env.AIRTABLE_BASE_ID); // Default to process.env if not provided
+    apiKey: apiKey, // Default to process.env if not provided
+  }).base(baseId); // Default to process.env if not provided
 
   let table = base("cms");
 
   // FUNCTIONS
-  const setTableName = (tableName) => {
+  const selectTable = (tableName) => {
     table = base(tableName);
   };
 
@@ -100,7 +102,7 @@ const airExport = (apiKey, baseId) => {
   // Return all functions
   return {
     listRecords,
-    setTableName,
+    selectTable,
     getRecordById,
     createRecord,
     updateRecord,
@@ -111,4 +113,4 @@ const airExport = (apiKey, baseId) => {
   };
 };
 
-export default airExport;
+export default airInstance;
