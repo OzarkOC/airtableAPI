@@ -1,3 +1,3 @@
-JS Airtable Functions
+# JS Airtable Functions
 
-#Functions#
+## Functions
