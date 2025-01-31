@@ -1,5 +1,6 @@
 import Airtable from "airtable";
 import dotenv from "dotenv";
+import axios from 'axios';
 dotenv.config();
 
 const airInstance = (
@@ -16,7 +17,29 @@ const airInstance = (
   const selectTable = (tableName) => {
     table = base(tableName);
   };
-
+  const listTables = async () => {
+    const baseId = process.env.AIRTABLE_BASE_ID;  // Make sure your .env file contains your base ID
+    const apiKey = process.env.AIRTABLE_API_KEY;  // Make sure your .env file contains your API key
+  
+    const url = `https://api.airtable.com/v0/meta/bases/${baseId}/tables`;
+  
+    try {
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+        },
+      });
+  
+      // Extract the table names from the response
+      const tables = response.data.tables.map((table) => table.name);
+  
+      console.log("Tables:", tables);  // This will log the list of table names
+      return tables;
+    } catch (error) {
+      console.error("Error fetching table names:", error.message);
+    }
+  };
+  
   const listRecords = async () => {
     try {
       const records = await table.select().firstPage();
@@ -110,6 +133,7 @@ const airInstance = (
     filterRecords,
     sortRecordList,
     searchArray,
+    listTables
   };
 };
 
