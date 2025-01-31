@@ -64,6 +64,15 @@ takes a ("string") \*\*Be sure the table name exists in airtable.
 airtable.selectTable("table_name");
 ```
 
+### List Table Names
+
+Show all the names of the tables within the base schema
+
+```javascript
+const tables = await airExport.listTables(); // Ensure you await this
+console.log(tables); // This will print the list of tables
+```
+
 ### List All Records
 
 Show all records in selected table.
