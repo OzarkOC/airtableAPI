@@ -18,9 +18,6 @@ const airInstance = (
     table = base(tableName);
   };
   const listTables = async () => {
-    const baseId = process.env.AIRTABLE_BASE_ID; // Make sure your .env file contains your base ID
-    const apiKey = process.env.AIRTABLE_API_KEY; // Make sure your .env file contains your API key
-
     const url = `https://api.airtable.com/v0/meta/bases/${baseId}/tables`;
 
     try {
