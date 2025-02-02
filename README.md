@@ -137,16 +137,8 @@ const filteredRecords = await airtable.filterRecords("{Status} = 'Active'");
 ```
 
 Where filterFormula is a string representing the filter condition.
-
-### Sort Records
-
-```javascript
-const sortedRecords = await airtable.sortRecordList("Name", "asc");
-console.log(sortedRecords);
-```
-
-### Field Types & Examples
-
+#### Field Types & Examples
+[https://support.airtable.com/docs/formula-field-reference]
 | Field Type                 | Filter Condition Example           | Description                                                              |
 | -------------------------- | ---------------------------------- | ------------------------------------------------------------------------ |
 | **Single Line Text**       | `{Name} = "John Doe"`              | Filters records where the `Name` field is exactly "John Doe".            |
@@ -158,6 +150,13 @@ console.log(sortedRecords);
 | **Formula**                | `{Calculated Field} = 50`          | Filters records where the value in the `Calculated Field` is 50.         |
 | **Attachment**             | `{File} = BLANK()`                 | Filters records where the `File` attachment field is empty.              |
 | **Link to another record** | `{Linked Record} = "Record ID"`    | Filters records where the linked record matches a specific ID.           |
+
+### Sort Records
+
+```javascript
+const sortedRecords = await airtable.sortRecordList("Name", "asc");
+console.log(sortedRecords);
+```
 
 ### Example Usage of `filterRecords`
 
