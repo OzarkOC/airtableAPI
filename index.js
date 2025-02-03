@@ -3,37 +3,43 @@ import dotenv from "dotenv";
 import axios from "axios";
 dotenv.config();
 
+if (!process.env.AIRTABLE_API_KEY) {
+  throw new Error(`Missing Airtable API KEY in Environment Variables`);
+}
+
+if (!process.env.AIRTABLE_BASE_ID) {
+  throw new Error(`Missing Airtable Base Id in Environment Variables`);
+}
+
 const airInstance = (
   apiKey = process.env.AIRTABLE_API_KEY,
   baseId = process.env.AIRTABLE_BASE_ID
 ) => {
-  const base = new Airtable({
-    apiKey: apiKey, // Default to process.env if not provided
-  }).base(baseId); // Default to process.env if not provided
-
+  const base = new Airtable({ apiKey }).base(baseId);
   let table = base("cms");
+
+  // Function to format record data
+  const recordData = (record) => ({
+    id: record.id,
+    fields: record.fields,
+  });
 
   // FUNCTIONS
   const selectTable = (tableName) => {
     table = base(tableName);
   };
+
   const listTables = async () => {
     const url = `https://api.airtable.com/v0/meta/bases/${baseId}/tables`;
 
     try {
       const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-        },
+        headers: { Authorization: `Bearer ${apiKey}` },
       });
-
-      // Extract the table names from the response
-      const tables = response.data.tables.map((table) => table.name);
-
-      // console.log("Tables:", tables);  // This will log the list of table names
-      return tables;
+      return response.data.tables.map((table) => table.name);
     } catch (error) {
       console.error("Error fetching table names:", error.message);
+      throw error; // Ensure the error is propagated
     }
   };
 
@@ -110,11 +116,6 @@ const airInstance = (
       throw err;
     }
   };
-
-  const recordData = (record) => ({
-    id: record.id,
-    fields: record.fields,
-  });
 
   const searchArray = (search, arrField) =>
     `FIND('${search}', ARRAYJOIN(${arrField}))`;

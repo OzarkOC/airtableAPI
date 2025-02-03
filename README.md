@@ -34,7 +34,7 @@ const airExport = airInstance();
 Alternatively, you can provide your API key and Base ID directly:
 
 ```javascript
-const airtEx = airExport("your_api_key", "your_base_id");
+const airEx = airExport("your_api_key", "your_base_id");
 ```
 
 #### Accessing Multiple Airtable Bases:
@@ -137,19 +137,21 @@ const filteredRecords = await airtable.filterRecords("{Status} = 'Active'");
 ```
 
 Where filterFormula is a string representing the filter condition.
+
 #### Field Types & Examples
+
 [https://support.airtable.com/docs/formula-field-reference]
-| Field Type                 | Filter Condition Example           | Description                                                              |
+| Field Type | Filter Condition Example | Description |
 | -------------------------- | ---------------------------------- | ------------------------------------------------------------------------ |
-| **Single Line Text**       | `{Name} = "John Doe"`              | Filters records where the `Name` field is exactly "John Doe".            |
-| **Single Select**          | `{Status} = "Active"`              | Filters records where the `Status` field is set to "Active".             |
-| **Number**                 | `{Price} > 100`                    | Filters records where the `Price` field is greater than 100.             |
-| **Date**                   | `{Start Date} >= "2023-01-01"`     | Filters records where the `Start Date` is on or after January 1st, 2023. |
-| **Checkbox**               | `{Is Active} = TRUE`               | Filters records where the `Is Active` checkbox is checked (TRUE).        |
-| **Multiple Select**        | `FIND('Red', ARRAYJOIN({Colors}))` | Filters records where the `Colors` field contains the value "Red".       |
-| **Formula**                | `{Calculated Field} = 50`          | Filters records where the value in the `Calculated Field` is 50.         |
-| **Attachment**             | `{File} = BLANK()`                 | Filters records where the `File` attachment field is empty.              |
-| **Link to another record** | `{Linked Record} = "Record ID"`    | Filters records where the linked record matches a specific ID.           |
+| **Single Line Text** | `{Name} = "John Doe"` | Filters records where the `Name` field is exactly "John Doe". |
+| **Single Select** | `{Status} = "Active"` | Filters records where the `Status` field is set to "Active". |
+| **Number** | `{Price} > 100` | Filters records where the `Price` field is greater than 100. |
+| **Date** | `{Start Date} >= "2023-01-01"` | Filters records where the `Start Date` is on or after January 1st, 2023. |
+| **Checkbox** | `{Is Active} = TRUE` | Filters records where the `Is Active` checkbox is checked (TRUE). |
+| **Multiple Select** | `FIND('Red', ARRAYJOIN({Colors}))` | Filters records where the `Colors` field contains the value "Red". |
+| **Formula** | `{Calculated Field} = 50` | Filters records where the value in the `Calculated Field` is 50. |
+| **Attachment** | `{File} = BLANK()` | Filters records where the `File` attachment field is empty. |
+| **Link to another record** | `{Linked Record} = "Record ID"` | Filters records where the linked record matches a specific ID. |
 
 ### Sort Records
 
