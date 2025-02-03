@@ -71,7 +71,6 @@ const airInstance = (
       throw err;
     }
   };
-
   const updateRecord = async (id, fields) => {
     try {
       const updatedRecord = await table.update(id, fields);
@@ -91,7 +90,6 @@ const airInstance = (
       throw err;
     }
   };
-
   const filterRecords = async (filter) => {
     try {
       const records = await table
@@ -115,7 +113,6 @@ const airInstance = (
       throw err;
     }
   };
-
   const searchArray = (search, arrField) =>
     `FIND('${search}', ARRAYJOIN(${arrField}))`;
 
