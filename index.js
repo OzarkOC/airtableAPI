@@ -42,7 +42,6 @@ const airInstance = (
       throw error; // Ensure the error is propagated
     }
   };
-
   const listRecords = async () => {
     try {
       const records = await table.select().firstPage();
