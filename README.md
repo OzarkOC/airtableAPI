@@ -86,7 +86,7 @@ Sets the table name for the Airtable API operations. Make sure the table name ex
 **Example Usage**
 
 ```javascript
-airExport.selectTable("table_name");
+await airExport.selectTable("table_name");
 ```
 
 ### getFullMetadata()

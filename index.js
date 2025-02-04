@@ -43,7 +43,7 @@ const airInstance = (
   const listTables = async () => {
     try {
       const tables = await getFullMetadata(); // Reuse the metadata function
-      return tables.map((table) => table.name); // Just return names
+      return tables.map((t) => t.name); // Just return names
     } catch (error) {
       console.error("Error listing table names:", error.message);
       throw error;
@@ -63,8 +63,17 @@ const airInstance = (
       console.error(`Error selecting table "${tableName}":`, err.message);
     }
   };
+  const tableErrHandler = () => {
+    if (!table) {
+      throw new Error(
+        "Please use await selectTable(tableName) before initializing function"
+      );
+    }
+    return;
+  };
   const listRecords = async () => {
     try {
+      tableErrHandler();
       const records = await table.select().firstPage();
       return records.map(recordData);
     } catch (err) {
@@ -75,6 +84,7 @@ const airInstance = (
 
   const getRecordById = async (id) => {
     try {
+      tableErrHandler();
       const record = await table.find(id);
       return recordData(record);
     } catch (err) {
@@ -85,6 +95,7 @@ const airInstance = (
 
   const createRecord = async (fields) => {
     try {
+      tableErrHandler();
       const createdRecord = await table.create(fields);
       return recordData(createdRecord);
     } catch (err) {
@@ -94,6 +105,7 @@ const airInstance = (
   };
   const updateRecord = async (id, fields) => {
     try {
+      tableErrHandler();
       const updatedRecord = await table.update(id, fields);
       return recordData(updatedRecord);
     } catch (err) {
@@ -104,6 +116,7 @@ const airInstance = (
 
   const deleteRecord = async (id) => {
     try {
+      tableErrHandler();
       const deletedRecord = await table.destroy(id);
       return recordData(deletedRecord);
     } catch (err) {
@@ -113,6 +126,7 @@ const airInstance = (
   };
   const filterRecords = async (filter) => {
     try {
+      tableErrHandler();
       const records = await table
         .select({ filterByFormula: filter })
         .firstPage();
@@ -125,6 +139,7 @@ const airInstance = (
 
   const sortRecordList = async (field, direction) => {
     try {
+      tableErrHandler();
       const records = await table
         .select({ sort: [{ field, direction }] })
         .firstPage();
@@ -137,12 +152,7 @@ const airInstance = (
 
   const getFieldNames = async () => {
     try {
-      if (!table) {
-        throw new Error(
-          "Table is not selected. Use selectTable() to select a table first."
-        );
-      }
-
+      tableErrHandler();
       const tables = await getFullMetadata(); // Reuse the metadata function
       const tableMetadata = tables.find((t) => t.name === table.name); // Use the selected table's name
 
