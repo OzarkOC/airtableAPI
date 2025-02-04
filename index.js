@@ -3,18 +3,17 @@ import dotenv from "dotenv";
 import axios from "axios";
 dotenv.config();
 
-if (!process.env.AIRTABLE_API_KEY) {
-  throw new Error(`Missing Airtable API KEY in Environment Variables`);
-}
-
-if (!process.env.AIRTABLE_BASE_ID) {
-  throw new Error(`Missing Airtable Base Id in Environment Variables`);
-}
-
 const airInstance = (
   apiKey = process.env.AIRTABLE_API_KEY,
   baseId = process.env.AIRTABLE_BASE_ID
 ) => {
+  if (!apiKey) {
+    throw new Error(`Missing Airtable API KEY in Environment Variables`);
+  }
+
+  if (!baseId) {
+    throw new Error(`Missing Airtable Base Id in Environment Variables`);
+  }
   const base = new Airtable({ apiKey }).base(baseId);
   let table = base("cms");
 
