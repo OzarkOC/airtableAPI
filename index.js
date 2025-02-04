@@ -15,7 +15,7 @@ const airInstance = (
     throw new Error(`Missing Airtable Base Id in Environment Variables`);
   }
   const base = new Airtable({ apiKey }).base(baseId);
-  let table = base("cms");
+  let table;
 
   // Function to format record data
   const recordData = (record) => ({
@@ -24,21 +24,43 @@ const airInstance = (
   });
 
   // FUNCTIONS
-  const selectTable = (tableName) => {
-    table = base(tableName);
-  };
 
-  const listTables = async () => {
+  const getFullMetadata = async () => {
     const url = `https://api.airtable.com/v0/meta/bases/${baseId}/tables`;
 
     try {
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${apiKey}` },
       });
-      return response.data.tables.map((table) => table.name);
+
+      return response.data.tables; // Return full metadata
     } catch (error) {
-      console.error("Error fetching table names:", error.message);
-      throw error; // Ensure the error is propagated
+      console.error("Error fetching table metadata:", error.message);
+      throw error;
+    }
+  };
+
+  const listTables = async () => {
+    try {
+      const tables = await getFullMetadata(); // Reuse the metadata function
+      return tables.map((table) => table.name); // Just return names
+    } catch (error) {
+      console.error("Error listing table names:", error.message);
+      throw error;
+    }
+  };
+  const selectTable = async (tableName) => {
+    try {
+      const tables = await listTables();
+      const check = tables.find((t) => t === tableName);
+      if (!check) {
+        throw new Error(
+          `Table "${tableName}" not found in the metadata: Check the name of the table you wish to select.`
+        );
+      }
+      table = base(tableName);
+    } catch (err) {
+      console.error(`Error selecting table "${tableName}":`, err.message);
     }
   };
   const listRecords = async () => {
@@ -112,6 +134,28 @@ const airInstance = (
       throw err;
     }
   };
+
+  const getFieldNames = async () => {
+    try {
+      if (!table) {
+        throw new Error(
+          "Table is not selected. Use selectTable() to select a table first."
+        );
+      }
+
+      const tables = await getFullMetadata(); // Reuse the metadata function
+      const tableMetadata = tables.find((t) => t.name === table.name); // Use the selected table's name
+
+      if (!tableMetadata) throw new Error(`Table "${table.name}" not found`);
+
+      // Now that we have the table metadata, return the field names
+      return tableMetadata.fields.map((field) => field.name);
+    } catch (error) {
+      console.error("Error fetching field names:", error.message);
+      throw error;
+    }
+  };
+
   const searchArray = (search, arrField) =>
     `FIND('${search}', ARRAYJOIN(${arrField}))`;
 
@@ -127,6 +171,8 @@ const airInstance = (
     sortRecordList,
     searchArray,
     listTables,
+    getFieldNames,
+    getFullMetadata,
   };
 };
 

@@ -12,6 +12,12 @@ npm install airtable dotenv
 
 ## Setup
 
+NPM to add node module:
+
+```console
+npm i airtable-api
+```
+
 Before using the package, create a `.env` file in your project root and add your Airtable API credentials:
 
 ```env
@@ -21,7 +27,13 @@ AIRTABLE_BASE_ID=your_airtable_base_id
 
 Then, import and initialize the module:
 
-Set your script type to module
+- Set your script type to module
+
+```html
+<script type="module" src="your/script/source.js"></script>
+```
+
+- Import placed in script:
 
 ```javascript
 import airInstance from "airtable-api";
@@ -31,17 +43,19 @@ dotenv.config();
 const airExport = airInstance();
 ```
 
-Alternatively, you can provide your API key and Base ID directly:
+Alternatively, you can provide your API key and Base ID directly,:
+
+NOTE: Only recomended on backend servers. API Keys should not be revealed on client-side.
 
 ```javascript
-const airEx = airExport("your_api_key", "your_base_id");
+const airExport2 = airInstance("your_api_key", "your_base_id");
 ```
 
 #### Accessing Multiple Airtable Bases:
 
 ```javascript
-const airtableInstance1 = airtable(apiKey1, baseID1);
-const airtableInstance2 = airtable(apiKey2, baseID2);
+const airExport1 = airInstance(apiKey1, baseID1);
+const airExport2 = airIntance(apiKey2, baseID2);
 ```
 
 ### Using Environment Variables on Other Platforms
@@ -54,89 +68,232 @@ If you are deploying your application on platforms like Vercel, Netlify, or Hero
 
 ## Usage
 
-Be sure to set the table name you want to use data from.
+Be sure to set the table name you want to use data from first.
 
-### Select/Change Table Name
+### selectTable()
 
-takes a ("string") \*\*Be sure the table name exists in airtable.
+**Description**  
+Sets the table name for the Airtable API operations. Make sure the table name exists in Airtable.
+
+**Parameters**
+
+- **tableName**: (string) The name of the table to set.
+
+**Returns**
+
+- None.
+
+**Example Usage**
 
 ```javascript
-airtable.selectTable("table_name");
+airExport.selectTable("table_name");
 ```
 
-### List Table Names
+### getFullMetadata()
 
-Show all the names of the tables within the base schema
+**Description**  
+Fetches full metadata for all tables in a specified Airtable base. This function is used as the foundation for both `listTables()` and `getFieldNames()`.
+
+**Parameters**
+
+- **None**
+
+**Returns**
+
+- A list of all tables and their metadata within the Airtable base.
+
+**Example Usage**
 
 ```javascript
-const tables = await airExport.listTables(); // Ensure you await this
-console.log(tables); // This will print the list of tables
+const tablesMetadata = await airExport.getFullMetadata();
+console.log(tablesMetadata); // Output: Array of table objects with metadata.
 ```
 
-### List All Records
+### getFieldNames()
 
-Show all records in selected table.
+**Description**
+Fetches the field names for a specified table in a given Airtable base. It utilizes the getFullMetadata() function to get all table metadata and finds the relevant table by its name, returning an array of field names for that table.
+
+**Parameters**
+
+- **None**
+
+**Returns**
+
+- An array of strings representing the field names in the specified table.
+
+**Example Usage**
 
 ```javascript
-const records = await airtable.listRecords();
-console.log(records);
+const fieldNames = await airExport.getFieldNames("Table1");
+console.log(fieldNames); // Output: Array of field names for "Table1" (e.g., ["Field1", "Field2", "Field3"]).
 ```
 
-### Get Record by ID
+### listTables()
 
-takes ("string")
+**Description**  
+Fetches all the names of the tables within the Airtable base schema.
+
+**Parameters**
+
+- **None**
+
+**Returns**
+
+- A list of table names within the Airtable base.
+
+**Example Usage**
 
 ```javascript
-const record = await airtable.getRecordById("rec123456");
+const tables = await airtable.listTables();
+console.log(tables); // Output: ["Table1", "Table2", "Table3"]
+```
+
+### listRecords()
+
+**Description**  
+Fetches all records from the currently selected table.
+
+**Parameters**
+
+- **None**
+
+**Returns**
+
+- An array of all records from the currently selected table.
+
+**Example Usage**
+
+```javascript
+const records = await aiExport.listRecords();
+console.log(records); // Output: Array of records from the selected table.
+```
+
+### getRecordById()
+
+**Description**  
+Fetches a single record by its ID from the currently selected table.
+
+**Parameters**
+
+- **recordId**: (string) The ID of the record to fetch.
+
+**Returns**
+
+- The record with the specified ID.
+
+**Example Usage**
+
+```javascript
+const record = await airExport.getRecordById("rec123456");
 console.log(record);
 ```
 
-### Create a Record
+### createRecord()
 
-Takes (object)
-Be sure your object has field names corrisopnding to your table.
-\*List a record or records to check the object of a record to use as a template. Leaveing a item "" blank or leaving it out of your object will make it blank. ie: Status: "";
+**Description**  
+Creates a new record in the currently selected table.
+
+**Parameters**
+
+- **recordData**: (object) The data for the new record. The object must include field names corresponding to the table's fields. To leave fields blank, do not add them to the object.
+
+**Returns**
+
+- The newly created record.
+
+**Example Usage**" blank or leaving it out of your object will make it blank. ie: Status: "";
 
 ```javascript
-const newRecord = await airtable.createRecord({
+const newRecord = await airExport.createRecord({
   Name: "New Entry",
   Status: "Active",
 });
 console.log(newRecord);
 ```
 
-### Update a Record
+### updateRecord()
 
-takes ("id", object)
-\*List a record or records to check the object of a record to use as a template. Leaveing a item "" blank ie: Status: ""; List only items in your object you desire to update. Leaving an item out of the object will keep its original value.
+**Description**  
+Updates an existing record in the currently selected table.
+
+**Parameters**
+
+- **recordId**: (string) The ID of the record to update.
+- **updateData**: (object) The data to update. Only fields provided in the object will be updated.
+
+**Returns**
+
+- The updated record.
+
+**Example Usage**
 
 ```javascript
-const updatedRecord = await airtable.updateRecord("rec123456", {
+const updatedRecord = await airExport.updateRecord("rec123456", {
   Status: "Updated",
 });
 console.log(updatedRecord);
 ```
 
-### Delete a Record
+### deleteRecord()
 
-Deletes by record ID ("string")
+**Description**  
+Deletes a record by its ID from the currently selected table.
+
+**Parameters**
+
+- **recordId**: (string) The ID of the record to delete.
+
+**Returns**
+
+- None.
+
+**Example Usage**
 
 ```javascript
-await airtable.deleteRecord("rec123456");
-console.log("Record deleted");
+await airExport.deleteRecord("rec123456");
 ```
 
-### Filter Records
+### sortRecordList()
 
-The filterRecords function allows you to filter records in your Airtable base based on field values. You can apply filters on various field types like Single Line Text, Number, Single Select, Date, etc.
-Takes a string.
+**Description**  
+Sorts the records in the selected table by a specific field in either ascending or descending order.
+
+**Parameters**
+
+- **fieldName**: (string) The field to sort by.
+- **order**: (string) Either "asc" for ascending or "desc" for descending.
+
+**Returns**
+
+- A sorted array of records.
+
+**Example Usage**
+
+```javascript
+const sortedRecords = await airExport.sortRecordList("Name", "asc");
+console.log(sortedRecords);
+```
+
+### filterRecords()
+
+**Description**  
+Filters records in the selected table based on a given condition using Airtable's filter formula syntax.
+
+**Parameters**
+
+- **filterFormula**: (string) The filter condition to apply.
+
+**Returns**
+
+- An array of records that match the filter condition.
+
+**Example Usage**
 Example: `{Field Name}="value"`
 
 ```javascript
-const filteredRecords = await airtable.filterRecords("{Status} = 'Active'");
+const filteredRecords = await airExport.filterRecords("{Status} = 'Active'");
 ```
-
-Where filterFormula is a string representing the filter condition.
 
 #### Field Types & Examples
 
@@ -153,13 +310,6 @@ Where filterFormula is a string representing the filter condition.
 | **Attachment** | `{File} = BLANK()` | Filters records where the `File` attachment field is empty. |
 | **Link to another record** | `{Linked Record} = "Record ID"` | Filters records where the linked record matches a specific ID. |
 
-### Sort Records
-
-```javascript
-const sortedRecords = await airtable.sortRecordList("Name", "asc");
-console.log(sortedRecords);
-```
-
 ### Example Usage of `filterRecords`
 
 The `filterRecords` function allows you to filter records based on specific conditions using Airtable's filter formulas. Below are some example usage scenarios based on different field types:
@@ -168,7 +318,7 @@ The `filterRecords` function allows you to filter records based on specific cond
 
 ```javascript
 const filter = `{Name} = "John Doe"`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the Name field is exactly "John Doe".
@@ -177,7 +327,7 @@ This filters records where the Name field is exactly "John Doe".
 
 ```javascript
 const filter = `{Status} = "Active"`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the Status field is set to "Active".
@@ -186,7 +336,7 @@ This filters records where the Status field is set to "Active".
 
 ```javascript
 const filter = `{Price} > 100`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the Price field is greater than 100.
@@ -195,7 +345,7 @@ This filters records where the Price field is greater than 100.
 
 ```javascript
 const filter = `{Start Date} >= "2023-01-01"`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the Start Date is on or after January 1st, 2023.
@@ -204,7 +354,7 @@ This filters records where the Start Date is on or after January 1st, 2023.
 
 ```javascript
 const filter = `{Is Active} = TRUE`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the Is Active checkbox is checked (TRUE).
@@ -213,7 +363,7 @@ This filters records where the Is Active checkbox is checked (TRUE).
 
 ```javascript
 const filter = `FIND('Red', ARRAYJOIN({Colors}))`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the Colors field contains the value "Red".
@@ -222,7 +372,7 @@ This filters records where the Colors field contains the value "Red".
 
 ```javascript
 const filter = `{Calculated Field} = 50`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the value in the Calculated Field is 50.
@@ -231,7 +381,7 @@ This filters records where the value in the Calculated Field is 50.
 
 ```javascript
 const filter = `{File} = BLANK()`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the File attachment field is empty.
@@ -240,7 +390,7 @@ This filters records where the File attachment field is empty.
 
 ```javascript
 const filter = `{Linked Record} = "Record ID"`;
-const filteredRecords = await airEx.filterRecords(filter);
+const filteredRecords = await airExport.filterRecords(filter);
 ```
 
 This filters records where the linked record matches a specific ID.
@@ -251,7 +401,7 @@ All functions return a Promise. Make sure to use `try/catch` when calling async 
 
 ```javascript
 try {
-  const records = await airtable.listRecords();
+  const records = await airExport.listRecords();
   console.log(records);
 } catch (error) {
   console.error("Error fetching records:", error);
